@@ -26,10 +26,10 @@ type StockUseRule struct {
 
 type PatternInfo struct {
 	Description     string `json:"description"`
-	MerchantLogo    string `json:"merchant_logo"`
-	MerchantName    string `json:"merchant_name"`
-	BackgroundColor string `json:"background_color"`
-	CouponImage     string `json:"coupon_image"`
+	MerchantLogo    string `json:"merchant_logo,omitempty"`
+	MerchantName    string `json:"merchant_name,omitempty"`
+	BackgroundColor string `json:"background_color,omitempty"`
+	CouponImage     string `json:"coupon_image,omitempty"`
 }
 
 type CouponUseRule struct {
@@ -44,4 +44,22 @@ type CouponUseRule struct {
 type FixedNormalCoupon struct {
 	CouponAmount       int64 `json:"coupon_amount"`
 	TransactionMinimum int64 `json:"transaction_minimum"`
+}
+
+type CouponStockResponse struct {
+	StockId    string `json:"stock_id"`
+	CreateTime string `json:"create_time"`
+}
+
+type CouponSendRequest struct {
+	StockID           string  `json:"stock_id"`
+	OutRequestNo      string  `json:"out_request_no"`
+	Appid             string  `json:"appid"`
+	StockCreatorMchid string  `json:"stock_creator_mchid"`
+	CouponValue       *uint64 `json:"coupon_value,omitempty"`
+	CouponMinimum     *uint64 `json:"coupon_minimum,omitempty"`
+}
+
+type CouponSendResponse struct {
+	CouponId string `json:"coupon_id"`
 }
