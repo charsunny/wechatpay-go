@@ -109,3 +109,15 @@ func (w withHeaderOption) Apply(o *dialSettings) {
 func WithHeader(header http.Header) ClientOption {
 	return withHeaderOption{header: header}
 }
+
+type withIsvOption bool
+
+// Apply 将配置添加到DialSettings中
+func (w withIsvOption) Apply(o *dialSettings) {
+	o.Isv = bool(w)
+}
+
+// WithTimeout 返回一个指定超时时间的ClientOption
+func WithIsv(isv bool) ClientOption {
+	return withIsvOption(isv)
+}

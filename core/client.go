@@ -48,6 +48,7 @@ type Client struct {
 	defaultHeader http.Header
 	credential    auth.Credential
 	validator     auth.Validator
+	isv           bool
 }
 
 // NewClient 初始化一个微信支付API v3 HTTPClient
@@ -63,6 +64,7 @@ func NewClient(ctx context.Context, opts ...ClientOption) (client *Client, err e
 		credential:    settings.Credential,
 		httpClient:    settings.HTTPClient,
 		defaultHeader: settings.Header,
+		isv:           settings.Isv,
 	}
 	return client, nil
 }
@@ -82,6 +84,10 @@ func initSettings(opts []ClientOption) (*dialSettings, error) {
 		o.HTTPClient.Timeout = o.Timeout
 	}
 	return &o, nil
+}
+
+func (client *Client) Isv() bool {
+	return client.isv
 }
 
 // Get 向微信支付发送一个 HTTP Get 请求

@@ -24,57 +24,18 @@ type Amount struct {
 	Currency *string `json:"currency,omitempty"`
 }
 
-func (o Amount) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.Total == nil {
-		return nil, fmt.Errorf("field `Total` is required and must be specified in Amount")
-	}
-	toSerialize["total"] = o.Total
-
-	if o.Currency != nil {
-		toSerialize["currency"] = o.Currency
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o Amount) String() string {
-	var ret string
-	if o.Total == nil {
-		ret += "Total:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Total:%v, ", *o.Total)
-	}
-
-	if o.Currency == nil {
-		ret += "Currency:<nil>"
-	} else {
-		ret += fmt.Sprintf("Currency:%v", *o.Currency)
-	}
-
-	return fmt.Sprintf("Amount{%s}", ret)
-}
-
 // CloseOrderRequest
 type CloseOrderRequest struct {
 	OutTradeNo *string `json:"out_trade_no"`
+	// 服务商商户
+	SpMchid  string `json:"sp_mchid,omitempty"`
+	SubMchid string `json:"sub_mchid,omitempty"`
 	// 直连商户号
-	Mchid *string `json:"mchid"`
+	Mchid *string `json:"mchid,omitempty"`
 }
 
 func (o CloseOrderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.OutTradeNo == nil {
-		return nil, fmt.Errorf("field `OutTradeNo` is required and must be specified in CloseOrderRequest")
-	}
-	toSerialize["out_trade_no"] = o.OutTradeNo
-
-	if o.Mchid == nil {
-		return nil, fmt.Errorf("field `Mchid` is required and must be specified in CloseOrderRequest")
-	}
-	toSerialize["mchid"] = o.Mchid
-	return json.Marshal(toSerialize)
+	return json.Marshal(o)
 }
 
 func (o CloseOrderRequest) String() string {
@@ -96,29 +57,11 @@ func (o CloseOrderRequest) String() string {
 
 // CloseRequest
 type CloseRequest struct {
+	// 服务商商户
+	SpMchid  string `json:"sp_mchid,omitempty"`
+	SubMchid string `json:"sub_mchid,omitempty"`
 	// 直连商户号
 	Mchid *string `json:"mchid"`
-}
-
-func (o CloseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.Mchid == nil {
-		return nil, fmt.Errorf("field `Mchid` is required and must be specified in CloseRequest")
-	}
-	toSerialize["mchid"] = o.Mchid
-	return json.Marshal(toSerialize)
-}
-
-func (o CloseRequest) String() string {
-	var ret string
-	if o.Mchid == nil {
-		ret += "Mchid:<nil>"
-	} else {
-		ret += fmt.Sprintf("Mchid:%v", *o.Mchid)
-	}
-
-	return fmt.Sprintf("CloseRequest{%s}", ret)
 }
 
 // Detail 优惠功能
@@ -128,42 +71,6 @@ type Detail struct {
 	// 商家小票ID。
 	InvoiceId   *string       `json:"invoice_id,omitempty"`
 	GoodsDetail []GoodsDetail `json:"goods_detail,omitempty"`
-}
-
-func (o Detail) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.CostPrice != nil {
-		toSerialize["cost_price"] = o.CostPrice
-	}
-
-	if o.InvoiceId != nil {
-		toSerialize["invoice_id"] = o.InvoiceId
-	}
-
-	if o.GoodsDetail != nil {
-		toSerialize["goods_detail"] = o.GoodsDetail
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o Detail) String() string {
-	var ret string
-	if o.CostPrice == nil {
-		ret += "CostPrice:<nil>, "
-	} else {
-		ret += fmt.Sprintf("CostPrice:%v, ", *o.CostPrice)
-	}
-
-	if o.InvoiceId == nil {
-		ret += "InvoiceId:<nil>, "
-	} else {
-		ret += fmt.Sprintf("InvoiceId:%v, ", *o.InvoiceId)
-	}
-
-	ret += fmt.Sprintf("GoodsDetail:%v", o.GoodsDetail)
-
-	return fmt.Sprintf("Detail{%s}", ret)
 }
 
 // GoodsDetail
@@ -180,101 +87,22 @@ type GoodsDetail struct {
 	UnitPrice *int32 `json:"unit_price"`
 }
 
-func (o GoodsDetail) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.MerchantGoodsId == nil {
-		return nil, fmt.Errorf("field `MerchantGoodsId` is required and must be specified in GoodsDetail")
-	}
-	toSerialize["merchant_goods_id"] = o.MerchantGoodsId
-
-	if o.WechatpayGoodsId != nil {
-		toSerialize["wechatpay_goods_id"] = o.WechatpayGoodsId
-	}
-
-	if o.GoodsName != nil {
-		toSerialize["goods_name"] = o.GoodsName
-	}
-
-	if o.Quantity == nil {
-		return nil, fmt.Errorf("field `Quantity` is required and must be specified in GoodsDetail")
-	}
-	toSerialize["quantity"] = o.Quantity
-
-	if o.UnitPrice == nil {
-		return nil, fmt.Errorf("field `UnitPrice` is required and must be specified in GoodsDetail")
-	}
-	toSerialize["unit_price"] = o.UnitPrice
-	return json.Marshal(toSerialize)
-}
-
-func (o GoodsDetail) String() string {
-	var ret string
-	if o.MerchantGoodsId == nil {
-		ret += "MerchantGoodsId:<nil>, "
-	} else {
-		ret += fmt.Sprintf("MerchantGoodsId:%v, ", *o.MerchantGoodsId)
-	}
-
-	if o.WechatpayGoodsId == nil {
-		ret += "WechatpayGoodsId:<nil>, "
-	} else {
-		ret += fmt.Sprintf("WechatpayGoodsId:%v, ", *o.WechatpayGoodsId)
-	}
-
-	if o.GoodsName == nil {
-		ret += "GoodsName:<nil>, "
-	} else {
-		ret += fmt.Sprintf("GoodsName:%v, ", *o.GoodsName)
-	}
-
-	if o.Quantity == nil {
-		ret += "Quantity:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Quantity:%v, ", *o.Quantity)
-	}
-
-	if o.UnitPrice == nil {
-		ret += "UnitPrice:<nil>"
-	} else {
-		ret += fmt.Sprintf("UnitPrice:%v", *o.UnitPrice)
-	}
-
-	return fmt.Sprintf("GoodsDetail{%s}", ret)
-}
-
 // Payer
 type Payer struct {
 	// 用户在商户appid下的唯一标识。
 	Openid *string `json:"openid,omitempty"`
 }
 
-func (o Payer) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.Openid != nil {
-		toSerialize["openid"] = o.Openid
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o Payer) String() string {
-	var ret string
-	if o.Openid == nil {
-		ret += "Openid:<nil>"
-	} else {
-		ret += fmt.Sprintf("Openid:%v", *o.Openid)
-	}
-
-	return fmt.Sprintf("Payer{%s}", ret)
-}
-
 // PrepayRequest
 type PrepayRequest struct {
-	// 公众号ID
-	Appid *string `json:"appid"`
-	// 直连商户号
-	Mchid *string `json:"mchid"`
+	// 服务商传递
+	SpMchid  string `json:"sp_mchid,omitempty"`
+	SubMchid string `json:"sub_mchid,omitempty"`
+	SpAppid  string `json:"sp_appid,omitempty"`
+	SubAppid string `json:"sub_appid,omitempty"`
+	// 直营商户公众号ID
+	Appid *string `json:"appid,omitempty"`
+	Mchid *string `json:"mchid,omitempty"`
 	// 商品描述
 	Description *string `json:"description"`
 	// 商户订单号
@@ -298,174 +126,10 @@ type PrepayRequest struct {
 	SettleInfo    *SettleInfo `json:"settle_info,omitempty"`
 }
 
-func (o PrepayRequest) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.Appid == nil {
-		return nil, fmt.Errorf("field `Appid` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["appid"] = o.Appid
-
-	if o.Mchid == nil {
-		return nil, fmt.Errorf("field `Mchid` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["mchid"] = o.Mchid
-
-	if o.Description == nil {
-		return nil, fmt.Errorf("field `Description` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["description"] = o.Description
-
-	if o.OutTradeNo == nil {
-		return nil, fmt.Errorf("field `OutTradeNo` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["out_trade_no"] = o.OutTradeNo
-
-	if o.TimeExpire != nil {
-		toSerialize["time_expire"] = o.TimeExpire.Format(time.RFC3339)
-	}
-
-	if o.Attach != nil {
-		toSerialize["attach"] = o.Attach
-	}
-
-	if o.NotifyUrl == nil {
-		return nil, fmt.Errorf("field `NotifyUrl` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["notify_url"] = o.NotifyUrl
-
-	if o.GoodsTag != nil {
-		toSerialize["goods_tag"] = o.GoodsTag
-	}
-
-	if o.LimitPay != nil {
-		toSerialize["limit_pay"] = o.LimitPay
-	}
-
-	if o.SupportFapiao != nil {
-		toSerialize["support_fapiao"] = o.SupportFapiao
-	}
-
-	if o.Amount == nil {
-		return nil, fmt.Errorf("field `Amount` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["amount"] = o.Amount
-
-	if o.Payer == nil {
-		return nil, fmt.Errorf("field `Payer` is required and must be specified in PrepayRequest")
-	}
-	toSerialize["payer"] = o.Payer
-
-	if o.Detail != nil {
-		toSerialize["detail"] = o.Detail
-	}
-
-	if o.SceneInfo != nil {
-		toSerialize["scene_info"] = o.SceneInfo
-	}
-
-	if o.SettleInfo != nil {
-		toSerialize["settle_info"] = o.SettleInfo
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o PrepayRequest) String() string {
-	var ret string
-	if o.Appid == nil {
-		ret += "Appid:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Appid:%v, ", *o.Appid)
-	}
-
-	if o.Mchid == nil {
-		ret += "Mchid:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Mchid:%v, ", *o.Mchid)
-	}
-
-	if o.Description == nil {
-		ret += "Description:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Description:%v, ", *o.Description)
-	}
-
-	if o.OutTradeNo == nil {
-		ret += "OutTradeNo:<nil>, "
-	} else {
-		ret += fmt.Sprintf("OutTradeNo:%v, ", *o.OutTradeNo)
-	}
-
-	if o.TimeExpire == nil {
-		ret += "TimeExpire:<nil>, "
-	} else {
-		ret += fmt.Sprintf("TimeExpire:%v, ", *o.TimeExpire)
-	}
-
-	if o.Attach == nil {
-		ret += "Attach:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Attach:%v, ", *o.Attach)
-	}
-
-	if o.NotifyUrl == nil {
-		ret += "NotifyUrl:<nil>, "
-	} else {
-		ret += fmt.Sprintf("NotifyUrl:%v, ", *o.NotifyUrl)
-	}
-
-	if o.GoodsTag == nil {
-		ret += "GoodsTag:<nil>, "
-	} else {
-		ret += fmt.Sprintf("GoodsTag:%v, ", *o.GoodsTag)
-	}
-
-	ret += fmt.Sprintf("LimitPay:%v, ", o.LimitPay)
-
-	if o.SupportFapiao == nil {
-		ret += "SupportFapiao:<nil>, "
-	} else {
-		ret += fmt.Sprintf("SupportFapiao:%v, ", *o.SupportFapiao)
-	}
-
-	ret += fmt.Sprintf("Amount:%v, ", o.Amount)
-
-	ret += fmt.Sprintf("Payer:%v, ", o.Payer)
-
-	ret += fmt.Sprintf("Detail:%v, ", o.Detail)
-
-	ret += fmt.Sprintf("SceneInfo:%v, ", o.SceneInfo)
-
-	ret += fmt.Sprintf("SettleInfo:%v", o.SettleInfo)
-
-	return fmt.Sprintf("PrepayRequest{%s}", ret)
-}
-
 // PrepayResponse
 type PrepayResponse struct {
 	// 预支付交易会话标识
 	PrepayId *string `json:"prepay_id"`
-}
-
-func (o PrepayResponse) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.PrepayId == nil {
-		return nil, fmt.Errorf("field `PrepayId` is required and must be specified in PrepayResponse")
-	}
-	toSerialize["prepay_id"] = o.PrepayId
-	return json.Marshal(toSerialize)
-}
-
-func (o PrepayResponse) String() string {
-	var ret string
-	if o.PrepayId == nil {
-		ret += "PrepayId:<nil>"
-	} else {
-		ret += fmt.Sprintf("PrepayId:%v", *o.PrepayId)
-	}
-
-	return fmt.Sprintf("PrepayResponse{%s}", ret)
 }
 
 // QueryOrderByIdRequest
@@ -475,75 +139,11 @@ type QueryOrderByIdRequest struct {
 	Mchid *string `json:"mchid"`
 }
 
-func (o QueryOrderByIdRequest) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.TransactionId == nil {
-		return nil, fmt.Errorf("field `TransactionId` is required and must be specified in QueryOrderByIdRequest")
-	}
-	toSerialize["transaction_id"] = o.TransactionId
-
-	if o.Mchid == nil {
-		return nil, fmt.Errorf("field `Mchid` is required and must be specified in QueryOrderByIdRequest")
-	}
-	toSerialize["mchid"] = o.Mchid
-	return json.Marshal(toSerialize)
-}
-
-func (o QueryOrderByIdRequest) String() string {
-	var ret string
-	if o.TransactionId == nil {
-		ret += "TransactionId:<nil>, "
-	} else {
-		ret += fmt.Sprintf("TransactionId:%v, ", *o.TransactionId)
-	}
-
-	if o.Mchid == nil {
-		ret += "Mchid:<nil>"
-	} else {
-		ret += fmt.Sprintf("Mchid:%v", *o.Mchid)
-	}
-
-	return fmt.Sprintf("QueryOrderByIdRequest{%s}", ret)
-}
-
 // QueryOrderByOutTradeNoRequest
 type QueryOrderByOutTradeNoRequest struct {
 	OutTradeNo *string `json:"out_trade_no"`
 	// 直连商户号
 	Mchid *string `json:"mchid"`
-}
-
-func (o QueryOrderByOutTradeNoRequest) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.OutTradeNo == nil {
-		return nil, fmt.Errorf("field `OutTradeNo` is required and must be specified in QueryOrderByOutTradeNoRequest")
-	}
-	toSerialize["out_trade_no"] = o.OutTradeNo
-
-	if o.Mchid == nil {
-		return nil, fmt.Errorf("field `Mchid` is required and must be specified in QueryOrderByOutTradeNoRequest")
-	}
-	toSerialize["mchid"] = o.Mchid
-	return json.Marshal(toSerialize)
-}
-
-func (o QueryOrderByOutTradeNoRequest) String() string {
-	var ret string
-	if o.OutTradeNo == nil {
-		ret += "OutTradeNo:<nil>, "
-	} else {
-		ret += fmt.Sprintf("OutTradeNo:%v, ", *o.OutTradeNo)
-	}
-
-	if o.Mchid == nil {
-		ret += "Mchid:<nil>"
-	} else {
-		ret += fmt.Sprintf("Mchid:%v", *o.Mchid)
-	}
-
-	return fmt.Sprintf("QueryOrderByOutTradeNoRequest{%s}", ret)
 }
 
 // SceneInfo 支付场景描述
@@ -555,67 +155,10 @@ type SceneInfo struct {
 	StoreInfo *StoreInfo `json:"store_info,omitempty"`
 }
 
-func (o SceneInfo) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.PayerClientIp == nil {
-		return nil, fmt.Errorf("field `PayerClientIp` is required and must be specified in SceneInfo")
-	}
-	toSerialize["payer_client_ip"] = o.PayerClientIp
-
-	if o.DeviceId != nil {
-		toSerialize["device_id"] = o.DeviceId
-	}
-
-	if o.StoreInfo != nil {
-		toSerialize["store_info"] = o.StoreInfo
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o SceneInfo) String() string {
-	var ret string
-	if o.PayerClientIp == nil {
-		ret += "PayerClientIp:<nil>, "
-	} else {
-		ret += fmt.Sprintf("PayerClientIp:%v, ", *o.PayerClientIp)
-	}
-
-	if o.DeviceId == nil {
-		ret += "DeviceId:<nil>, "
-	} else {
-		ret += fmt.Sprintf("DeviceId:%v, ", *o.DeviceId)
-	}
-
-	ret += fmt.Sprintf("StoreInfo:%v", o.StoreInfo)
-
-	return fmt.Sprintf("SceneInfo{%s}", ret)
-}
-
 // SettleInfo
 type SettleInfo struct {
 	// 是否指定分账
 	ProfitSharing *bool `json:"profit_sharing,omitempty"`
-}
-
-func (o SettleInfo) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.ProfitSharing != nil {
-		toSerialize["profit_sharing"] = o.ProfitSharing
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o SettleInfo) String() string {
-	var ret string
-	if o.ProfitSharing == nil {
-		ret += "ProfitSharing:<nil>"
-	} else {
-		ret += fmt.Sprintf("ProfitSharing:%v", *o.ProfitSharing)
-	}
-
-	return fmt.Sprintf("SettleInfo{%s}", ret)
 }
 
 // StoreInfo 商户门店信息
@@ -628,55 +171,4 @@ type StoreInfo struct {
 	AreaCode *string `json:"area_code,omitempty"`
 	// 详细的商户门店地址
 	Address *string `json:"address,omitempty"`
-}
-
-func (o StoreInfo) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-
-	if o.Id == nil {
-		return nil, fmt.Errorf("field `Id` is required and must be specified in StoreInfo")
-	}
-	toSerialize["id"] = o.Id
-
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
-	}
-
-	if o.AreaCode != nil {
-		toSerialize["area_code"] = o.AreaCode
-	}
-
-	if o.Address != nil {
-		toSerialize["address"] = o.Address
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o StoreInfo) String() string {
-	var ret string
-	if o.Id == nil {
-		ret += "Id:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Id:%v, ", *o.Id)
-	}
-
-	if o.Name == nil {
-		ret += "Name:<nil>, "
-	} else {
-		ret += fmt.Sprintf("Name:%v, ", *o.Name)
-	}
-
-	if o.AreaCode == nil {
-		ret += "AreaCode:<nil>, "
-	} else {
-		ret += fmt.Sprintf("AreaCode:%v, ", *o.AreaCode)
-	}
-
-	if o.Address == nil {
-		ret += "Address:<nil>"
-	} else {
-		ret += fmt.Sprintf("Address:%v", *o.Address)
-	}
-
-	return fmt.Sprintf("StoreInfo{%s}", ret)
 }
