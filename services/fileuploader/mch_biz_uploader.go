@@ -1,3 +1,5 @@
+// Copyright 2021 Tencent Inc. All rights reserved.
+
 package fileuploader
 
 import (
@@ -10,7 +12,7 @@ import (
 
 // MchBizUploadResponse 商户上传反馈图片API返回结果
 type MchBizUploadResponse struct {
-	MediaId *string `json:"media_id"`
+	MediaId *string `json:"media_id"` // revive:disable-line:var-naming
 }
 
 // MchBizUploader 商户上传反馈图片API
@@ -20,8 +22,12 @@ type MchBizUploadResponse struct {
 type MchBizUploader services.Service
 
 // Upload 上传反馈图片至微信支付
-func (u *MchBizUploader) Upload(ctx context.Context, fileReader io.Reader, filename, contentType string) (*MchBizUploadResponse, *core.APIResult, error) {
-	result, err := (*baseFileUploader)(u).upload(ctx, "/v3/merchant-service/images/upload", fileReader, filename, contentType, map[string]interface{}{})
+func (u *MchBizUploader) Upload(
+	ctx context.Context, fileReader io.Reader, filename, contentType string,
+) (*MchBizUploadResponse, *core.APIResult, error) {
+	result, err := (*baseFileUploader)(u).upload(
+		ctx, "/v3/merchant-service/images/upload", fileReader, filename, contentType, map[string]interface{}{},
+	)
 	if err != nil {
 		return nil, result, err
 	}

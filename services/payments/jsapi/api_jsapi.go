@@ -35,7 +35,7 @@ func (a *JsapiApiService) CloseOrder(ctx context.Context, req CloseOrderRequest)
 		localVarHTTPMethod   = nethttp.MethodPost
 		localVarPostBody     interface{}
 		localVarQueryParams  neturl.Values
-		localVarHeaderParams nethttp.Header
+		localVarHeaderParams = nethttp.Header{}
 	)
 
 	// Make sure Path Params are properly set
@@ -79,7 +79,7 @@ func (a *JsapiApiService) Prepay(ctx context.Context, req PrepayRequest) (resp *
 		localVarHTTPMethod   = nethttp.MethodPost
 		localVarPostBody     interface{}
 		localVarQueryParams  neturl.Values
-		localVarHeaderParams nethttp.Header
+		localVarHeaderParams = nethttp.Header{}
 	)
 
 	partner := ""
@@ -121,7 +121,7 @@ func (a *JsapiApiService) QueryOrderById(ctx context.Context, req QueryOrderById
 		localVarHTTPMethod   = nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarQueryParams  neturl.Values
-		localVarHeaderParams nethttp.Header
+		localVarHeaderParams = nethttp.Header{}
 	)
 
 	// Make sure Path Params are properly set
@@ -175,7 +175,7 @@ func (a *JsapiApiService) QueryOrderByOutTradeNo(ctx context.Context, req QueryO
 		localVarHTTPMethod   = nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarQueryParams  neturl.Values
-		localVarHeaderParams nethttp.Header
+		localVarHeaderParams = nethttp.Header{}
 	)
 
 	// Make sure Path Params are properly set

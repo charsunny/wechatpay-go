@@ -1,5 +1,9 @@
+// Copyright 2021 Tencent Inc. All rights reserved.
+
 // Package consts 微信支付 API v3 Go SDK 常量
 package consts
+
+import "time"
 
 // 微信支付 API 地址
 const (
@@ -9,8 +13,8 @@ const (
 
 // SDK 相关信息
 const (
-	Version          = "0.2.0"                              // SDK 版本
-	UserAgentContent = "WechatPay-Go-HttpClient/" + Version // UserAgent中的信息
+	Version         = "0.2.5"                      // SDK 版本
+	UserAgentFormat = "WechatPay-Go/%s (%s) GO/%s" // UserAgent中的信息
 )
 
 // HTTP 请求报文 Header 相关常量
@@ -32,11 +36,9 @@ const (
 
 // 请求报文签名相关常量
 const (
-	NonceSymbols           = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" // 随机字符串可用字符集
-	NonceLength            = 32                                                               // 随机字符串的长度
-	SignatureMessageFormat = "%s\n%s\n%d\n%s\n%s\n"                                           // 数字签名原文格式
+	SignatureMessageFormat = "%s\n%s\n%d\n%s\n%s\n" // 数字签名原文格式
 	// HeaderAuthorizationFormat 请求头中的 Authorization 拼接格式
-	HeaderAuthorizationFormat = "WECHATPAY2-SHA256-RSA2048 mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\""
+	HeaderAuthorizationFormat = "%s mchid=\"%s\",nonce_str=\"%s\",timestamp=\"%d\",serial_no=\"%s\",signature=\"%s\""
 )
 
 // HTTP 应答报文 Header 相关常量
@@ -48,6 +50,8 @@ const (
 	RequestID          = "Request-Id"          // 微信支付回包请求ID
 )
 
+// 时间相关常量
 const (
-	FiveMinute = 5 * 60 // 回包校验最长时间（秒）
+	FiveMinute     = 5 * 60           // 回包校验最长时间（秒）
+	DefaultTimeout = 30 * time.Second // HTTP 请求默认超时时间
 )

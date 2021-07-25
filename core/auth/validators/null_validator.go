@@ -1,3 +1,5 @@
+// Copyright 2021 Tencent Inc. All rights reserved.
+
 // Package validators 微信支付 API v3 Go SDK 应答报文签名验证器
 package validators
 
@@ -12,6 +14,6 @@ type NullValidator struct {
 }
 
 // Validate 跳过报文签名验证
-func (validator *NullValidator) Validate(ctx context.Context, response *http.Response) error {
+func (validator *NullValidator) Validate(context.Context, *http.Response) error {
 	return nil
 }

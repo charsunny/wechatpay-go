@@ -1,3 +1,5 @@
+// Copyright 2021 Tencent Inc. All rights reserved.
+
 package fileuploader_test
 
 import (
@@ -17,10 +19,10 @@ func ExampleImageUploader_Upload() {
 	// 假设已获得初始化后的 core.Client
 
 	file, err := os.Open("picture.jpg")
-	defer file.Close()
 	if err != nil {
 		return
 	}
+	defer file.Close()
 
 	svc := fileuploader.ImageUploader{Client: client}
 	resp, result, err := svc.Upload(ctx, file, "picture.jpg", consts.ImageJPG)
@@ -37,10 +39,10 @@ func ExampleVideoUploader_Upload() {
 	// 假设已获得初始化后的 core.Client
 
 	file, err := os.Open("video.mp4")
-	defer file.Close()
 	if err != nil {
 		return
 	}
+	defer file.Close()
 
 	svc := fileuploader.VideoUploader{Client: client}
 	resp, result, err := svc.Upload(ctx, file, "video.mp4", consts.VideoMP4)
@@ -57,10 +59,10 @@ func ExampleMarketingImageUploader_Upload() {
 	// 假设已获得初始化后的 core.Client
 
 	file, err := os.Open("picture.jpg")
-	defer file.Close()
 	if err != nil {
 		return
 	}
+	defer file.Close()
 
 	svc := fileuploader.MarketingImageUploader{Client: client}
 	resp, result, err := svc.Upload(ctx, file, "picture.jpg", consts.ImageJPG)
@@ -77,10 +79,10 @@ func ExampleMchBizUploader_Upload() {
 	// 假设已获得初始化后的 core.Client
 
 	file, err := os.Open("picture.jpg")
-	defer file.Close()
 	if err != nil {
 		return
 	}
+	defer file.Close()
 
 	svc := fileuploader.MchBizUploader{Client: client}
 	resp, result, err := svc.Upload(ctx, file, "picture.jpg", consts.ImageJPG)
