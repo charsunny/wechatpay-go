@@ -24,8 +24,6 @@ type Amount struct {
 	Currency *string `json:"currency,omitempty"`
 }
 
-<<<<<<< HEAD
-=======
 func (o Amount) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -73,7 +71,6 @@ func (o Amount) Clone() *Amount {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // CloseOrderRequest
 type CloseOrderRequest struct {
 	OutTradeNo *string `json:"out_trade_no"`
@@ -81,8 +78,6 @@ type CloseOrderRequest struct {
 	Mchid *string `json:"mchid"`
 }
 
-<<<<<<< HEAD
-=======
 func (o CloseOrderRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -131,15 +126,12 @@ func (o CloseOrderRequest) Clone() *CloseOrderRequest {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // CloseRequest
 type CloseRequest struct {
 	// 直连商户号
 	Mchid *string `json:"mchid"`
 }
 
-<<<<<<< HEAD
-=======
 func (o CloseRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -172,7 +164,6 @@ func (o CloseRequest) Clone() *CloseRequest {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // Detail 优惠功能
 type Detail struct {
 	// 1.商户侧一张小票订单可能被分多次支付，订单原价用于记录整张小票的交易金额。 2.当订单原价与支付金额不相等，则不享受优惠。 3.该字段主要用于防止同一张小票分多次支付，以享受多次优惠的情况，正常支付订单不必上传此参数。
@@ -182,8 +173,6 @@ type Detail struct {
 	GoodsDetail []GoodsDetail `json:"goods_detail,omitempty"`
 }
 
-<<<<<<< HEAD
-=======
 func (o Detail) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -243,7 +232,6 @@ func (o Detail) Clone() *Detail {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // GoodsDetail
 type GoodsDetail struct {
 	// 由半角的大小写字母、数字、中划线、下划线中的一种或几种组成。
@@ -258,8 +246,6 @@ type GoodsDetail struct {
 	UnitPrice *int64 `json:"unit_price"`
 }
 
-<<<<<<< HEAD
-=======
 func (o GoodsDetail) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -354,7 +340,6 @@ func (o GoodsDetail) Clone() *GoodsDetail {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // H5Info
 type H5Info struct {
 	// 场景类型
@@ -369,8 +354,6 @@ type H5Info struct {
 	PackageName *string `json:"package_name,omitempty"`
 }
 
-<<<<<<< HEAD
-=======
 func (o H5Info) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -463,17 +446,12 @@ func (o H5Info) Clone() *H5Info {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // PrepayRequest
 type PrepayRequest struct {
-	// 服务商传递
-	SpMchid  string `json:"sp_mchid,omitempty"`
-	SubMchid string `json:"sub_mchid,omitempty"`
-	SpAppid  string `json:"sp_appid,omitempty"`
-	SubAppid string `json:"sub_appid,omitempty"`
-	// 直营商户公众号ID
-	Appid *string `json:"appid,omitempty"`
-	Mchid *string `json:"mchid,omitempty"`
+	// 公众号ID
+	Appid *string `json:"appid"`
+	// 直连商户号
+	Mchid *string `json:"mchid"`
 	// 商品描述
 	Description *string `json:"description"`
 	// 商户订单号
@@ -496,8 +474,6 @@ type PrepayRequest struct {
 	SettleInfo    *SettleInfo `json:"settle_info,omitempty"`
 }
 
-<<<<<<< HEAD
-=======
 func (o PrepayRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -709,7 +685,6 @@ func (o PrepayRequest) Clone() *PrepayRequest {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // PrepayResponse
 type PrepayResponse struct {
 	// 支付跳转链接
@@ -755,8 +730,6 @@ type QueryOrderByIdRequest struct {
 	Mchid *string `json:"mchid"`
 }
 
-<<<<<<< HEAD
-=======
 func (o QueryOrderByIdRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -805,16 +778,13 @@ func (o QueryOrderByIdRequest) Clone() *QueryOrderByIdRequest {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // QueryOrderByOutTradeNoRequest
 type QueryOrderByOutTradeNoRequest struct {
-	OutTradeNo *string `json:"out_trade_no"
+	OutTradeNo *string `json:"out_trade_no"`
 	// 直连商户号
 	Mchid *string `json:"mchid"`
 }
 
-<<<<<<< HEAD
-=======
 func (o QueryOrderByOutTradeNoRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -863,7 +833,6 @@ func (o QueryOrderByOutTradeNoRequest) Clone() *QueryOrderByOutTradeNoRequest {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // SceneInfo 支付场景描述
 type SceneInfo struct {
 	// 用户终端IP
@@ -874,8 +843,6 @@ type SceneInfo struct {
 	H5Info    *H5Info    `json:"h5_info"`
 }
 
-<<<<<<< HEAD
-=======
 func (o SceneInfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -944,15 +911,12 @@ func (o SceneInfo) Clone() *SceneInfo {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // SettleInfo
 type SettleInfo struct {
 	// 是否指定分账
 	ProfitSharing *bool `json:"profit_sharing,omitempty"`
 }
 
-<<<<<<< HEAD
-=======
 func (o SettleInfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -984,7 +948,6 @@ func (o SettleInfo) Clone() *SettleInfo {
 	return &ret
 }
 
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7
 // StoreInfo 商户门店信息
 type StoreInfo struct {
 	// 商户侧门店编号
@@ -996,8 +959,6 @@ type StoreInfo struct {
 	// 详细的商户门店地址
 	Address *string `json:"address,omitempty"`
 }
-<<<<<<< HEAD
-=======
 
 func (o StoreInfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -1075,4 +1036,3 @@ func (o StoreInfo) Clone() *StoreInfo {
 
 	return &ret
 }
->>>>>>> 76b154c1d84cd18c071f5746c96cc3af0f23eff7

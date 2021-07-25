@@ -42,11 +42,8 @@ func (a *JsapiApiService) CloseOrder(ctx context.Context, req CloseOrderRequest)
 	if req.OutTradeNo == nil {
 		return nil, fmt.Errorf("field `OutTradeNo` is required and must be specified in CloseOrderRequest")
 	}
-	partner := ""
-	if a.Client.Isv() {
-		partner = "partner/"
-	}
-	localVarPath := consts.WechatPayAPIServer + "/v3/pay/" + partner + "transactions/out-trade-no/{out_trade_no}/close"
+
+	localVarPath := consts.WechatPayAPIServer + "/v3/pay/transactions/out-trade-no/{out_trade_no}/close"
 	// Build Path with Path Params
 	localVarPath = strings.Replace(localVarPath, "{"+"out_trade_no"+"}", neturl.PathEscape(core.ParameterToString(*req.OutTradeNo, "")), -1)
 
@@ -82,12 +79,7 @@ func (a *JsapiApiService) Prepay(ctx context.Context, req PrepayRequest) (resp *
 		localVarHeaderParams = nethttp.Header{}
 	)
 
-	partner := ""
-	if a.Client.Isv() {
-		partner = "partner/"
-	}
-
-	localVarPath := consts.WechatPayAPIServer + "/v3/pay/" + partner + "transactions/jsapi"
+	localVarPath := consts.WechatPayAPIServer + "/v3/pay/transactions/jsapi"
 	// Make sure All Required Params are properly set
 
 	// Setup Body Params
@@ -129,12 +121,7 @@ func (a *JsapiApiService) QueryOrderById(ctx context.Context, req QueryOrderById
 		return nil, nil, fmt.Errorf("field `TransactionId` is required and must be specified in QueryOrderByIdRequest")
 	}
 
-	partner := ""
-	if a.Client.Isv() {
-		partner = "partner/"
-	}
-
-	localVarPath := consts.WechatPayAPIServer + "/v3/pay/" + partner + "transactions/id/{transaction_id}"
+	localVarPath := consts.WechatPayAPIServer + "/v3/pay/transactions/id/{transaction_id}"
 	// Build Path with Path Params
 	localVarPath = strings.Replace(localVarPath, "{"+"transaction_id"+"}", neturl.PathEscape(core.ParameterToString(*req.TransactionId, "")), -1)
 
@@ -183,12 +170,7 @@ func (a *JsapiApiService) QueryOrderByOutTradeNo(ctx context.Context, req QueryO
 		return nil, nil, fmt.Errorf("field `OutTradeNo` is required and must be specified in QueryOrderByOutTradeNoRequest")
 	}
 
-	partner := ""
-	if a.Client.Isv() {
-		partner = "partner/"
-	}
-
-	localVarPath := consts.WechatPayAPIServer + "/v3/pay/" + partner + "transactions/out-trade-no/{out_trade_no}"
+	localVarPath := consts.WechatPayAPIServer + "/v3/pay/transactions/out-trade-no/{out_trade_no}"
 	// Build Path with Path Params
 	localVarPath = strings.Replace(localVarPath, "{"+"out_trade_no"+"}", neturl.PathEscape(core.ParameterToString(*req.OutTradeNo, "")), -1)
 

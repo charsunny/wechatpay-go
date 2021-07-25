@@ -74,15 +74,23 @@ func (o Amount) Clone() *Amount {
 // CloseOrderRequest
 type CloseOrderRequest struct {
 	OutTradeNo *string `json:"out_trade_no"`
-	// 服务商商户
-	SpMchid  string `json:"sp_mchid,omitempty"`
-	SubMchid string `json:"sub_mchid,omitempty"`
 	// 直连商户号
-	Mchid *string `json:"mchid,omitempty"`
+	Mchid *string `json:"mchid"`
 }
 
 func (o CloseOrderRequest) MarshalJSON() ([]byte, error) {
-	return json.Marshal(o)
+	toSerialize := map[string]interface{}{}
+
+	if o.OutTradeNo == nil {
+		return nil, fmt.Errorf("field `OutTradeNo` is required and must be specified in CloseOrderRequest")
+	}
+	toSerialize["out_trade_no"] = o.OutTradeNo
+
+	if o.Mchid == nil {
+		return nil, fmt.Errorf("field `Mchid` is required and must be specified in CloseOrderRequest")
+	}
+	toSerialize["mchid"] = o.Mchid
+	return json.Marshal(toSerialize)
 }
 
 func (o CloseOrderRequest) String() string {
@@ -120,9 +128,6 @@ func (o CloseOrderRequest) Clone() *CloseOrderRequest {
 
 // CloseRequest
 type CloseRequest struct {
-	// 服务商商户
-	SpMchid  string `json:"sp_mchid,omitempty"`
-	SubMchid string `json:"sub_mchid,omitempty"`
 	// 直连商户号
 	Mchid *string `json:"mchid"`
 }
@@ -374,14 +379,10 @@ func (o Payer) Clone() *Payer {
 
 // PrepayRequest
 type PrepayRequest struct {
-	// 服务商传递
-	SpMchid  string `json:"sp_mchid,omitempty"`
-	SubMchid string `json:"sub_mchid,omitempty"`
-	SpAppid  string `json:"sp_appid,omitempty"`
-	SubAppid string `json:"sub_appid,omitempty"`
-	// 直营商户公众号ID
-	Appid *string `json:"appid,omitempty"`
-	Mchid *string `json:"mchid,omitempty"`
+	// 公众号ID
+	Appid *string `json:"appid"`
+	// 直连商户号
+	Mchid *string `json:"mchid"`
 	// 商品描述
 	Description *string `json:"description"`
 	// 商户订单号

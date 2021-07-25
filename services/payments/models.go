@@ -330,12 +330,6 @@ func (o PromotionGoodsDetail) Clone() *PromotionGoodsDetail {
 
 // Transaction
 type Transaction struct {
-	// 服务商返回
-	SpMchid  string `json:"sp_mchid,omitempty"`
-	SubMchid string `json:"sub_mchid,omitempty"`
-	SpAppid  string `json:"sp_appid,omitempty"`
-	SubAppid string `json:"sub_appid,omitempty"`
-	// 正常返回
 	Amount          *TransactionAmount `json:"amount,omitempty"`
 	Appid           *string            `json:"appid,omitempty"`
 	Attach          *string            `json:"attach,omitempty"`

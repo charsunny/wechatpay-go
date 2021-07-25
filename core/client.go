@@ -65,7 +65,6 @@ type Client struct {
 	validator  auth.Validator
 	signer     auth.Signer
 	cipher     cipher.Cipher
-	isv        bool
 }
 
 // NewClient 初始化一个微信支付API v3 HTTPClient
@@ -100,7 +99,6 @@ func NewClientWithValidator(client *Client, validator auth.Validator) *Client {
 		signer:     client.signer,
 		validator:  validator,
 		cipher:     client.cipher,
-		isv:        client.isv,
 	}
 }
 
@@ -135,10 +133,6 @@ func initSettings(opts []ClientOption) (*DialSettings, error) {
 		return nil, err
 	}
 	return &o, nil
-}
-
-func (client *Client) Isv() bool {
-	return client.isv
 }
 
 // Get 向微信支付发送一个 HTTP Get 请求
