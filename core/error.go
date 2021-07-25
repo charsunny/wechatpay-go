@@ -1,3 +1,5 @@
+// Copyright 2021 Tencent Inc. All rights reserved.
+
 package core
 
 import (
@@ -43,12 +45,12 @@ func (e *APIError) Error() string {
 	return buf.String()
 }
 
-// ParameterError 请求参数错误
-type ParameterError struct {
-	FieldName string
-	Message   string
-}
-
-func (e *ParameterError) Error() string {
-	return fmt.Sprintf("`%s` %s", e.FieldName, e.Message)
+// IsAPIError 判断当前 error 是否为特定 Code 的 *APIError
+//
+// 类型为其他 error 或 Code 不匹配时均返回 false
+func IsAPIError(err error, code string) bool {
+	if ne, ok := err.(*APIError); ok {
+		return ne.Code == code
+	}
+	return false
 }

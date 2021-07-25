@@ -1,4 +1,4 @@
-// Copyright 2021 Tencent Inc.  All rights reserved.
+// Copyright 2021 Tencent Inc. All rights reserved.
 
 // Package core 微信支付 API v3 Go SDK HTTPClient 基础库，你可以使用它来创建一个 Client，并向微信支付发送 HTTP 请求
 //
@@ -22,10 +22,13 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"runtime"
 	"strings"
 	"time"
 
 	"github.com/wechatpay-apiv3/wechatpay-go/core/auth"
+	"github.com/wechatpay-apiv3/wechatpay-go/core/auth/credentials"
+	"github.com/wechatpay-apiv3/wechatpay-go/core/cipher"
 	"github.com/wechatpay-apiv3/wechatpay-go/core/consts"
 )
 
@@ -42,46 +45,94 @@ type APIResult struct {
 	Response *http.Response
 }
 
+// ClientOption 微信支付 API v3 HTTPClient core.Client 初始化参数
+type ClientOption interface {
+	Apply(settings *DialSettings) error
+}
+
+// ErrorOption 错误初始化参数，用于返回错误
+type ErrorOption struct{ Error error }
+
+// Apply 返回初始化错误
+func (w ErrorOption) Apply(*DialSettings) error {
+	return w.Error
+}
+
 // Client 微信支付API v3 基础 Client
 type Client struct {
-	httpClient    *http.Client
-	defaultHeader http.Header
-	credential    auth.Credential
-	validator     auth.Validator
-	isv           bool
+	httpClient *http.Client
+	credential auth.Credential
+	validator  auth.Validator
+	signer     auth.Signer
+	cipher     cipher.Cipher
+	isv        bool
 }
 
 // NewClient 初始化一个微信支付API v3 HTTPClient
 //
 // 初始化的时候你可以传递多个配置信息
-func NewClient(ctx context.Context, opts ...ClientOption) (client *Client, err error) {
+func NewClient(ctx context.Context, opts ...ClientOption) (*Client, error) {
 	settings, err := initSettings(opts)
 	if err != nil {
 		return nil, fmt.Errorf("init client setting err:%v", err)
 	}
-	client = &Client{
-		validator:     settings.Validator,
-		credential:    settings.Credential,
-		httpClient:    settings.HTTPClient,
-		defaultHeader: settings.Header,
-		isv:           settings.Isv,
-	}
+
+	client := initClientWithSettings(ctx, settings)
 	return client, nil
 }
 
-func initSettings(opts []ClientOption) (*dialSettings, error) {
-	var o dialSettings
+// NewClientWithDialSettings 使用 DialSettings 初始化一个微信支付API v3 HTTPClient
+func NewClientWithDialSettings(ctx context.Context, settings *DialSettings) (*Client, error) {
+	if err := settings.Validate(); err != nil {
+		return nil, err
+	}
+
+	client := initClientWithSettings(ctx, settings)
+	return client, nil
+}
+
+// NewClientWithValidator 使用原 Client 复制一个新的 Client，并设置新 Client 的 validator。
+// 原 Client 不受任何影响
+func NewClientWithValidator(client *Client, validator auth.Validator) *Client {
+	return &Client{
+		httpClient: client.httpClient,
+		credential: client.credential,
+		signer:     client.signer,
+		validator:  validator,
+		cipher:     client.cipher,
+		isv:        client.isv,
+	}
+}
+
+func initClientWithSettings(_ context.Context, settings *DialSettings) *Client {
+	client := &Client{
+		signer:     settings.Signer,
+		validator:  settings.Validator,
+		credential: &credentials.WechatPayCredentials{Signer: settings.Signer},
+		httpClient: settings.HTTPClient,
+		cipher:     settings.Cipher,
+	}
+
+	if client.httpClient == nil {
+		client.httpClient = &http.Client{
+			Timeout: consts.DefaultTimeout,
+		}
+	}
+	return client
+}
+
+func initSettings(opts []ClientOption) (*DialSettings, error) {
+	var (
+		o   DialSettings
+		err error
+	)
 	for _, opt := range opts {
-		opt.Apply(&o)
+		if err = opt.Apply(&o); err != nil {
+			return nil, err
+		}
 	}
 	if err := o.Validate(); err != nil {
 		return nil, err
-	}
-	if o.HTTPClient == nil {
-		o.HTTPClient = &http.Client{}
-	}
-	if o.Timeout != 0 {
-		o.HTTPClient.Timeout = o.Timeout
 	}
 	return &o, nil
 }
@@ -110,17 +161,22 @@ func (client *Client) Put(ctx context.Context, requestURL string, requestBody in
 	return client.requestWithJSONBody(ctx, http.MethodPut, requestURL, requestBody)
 }
 
-// Delete 向微信支付发送一个 Http Delete 请求
+// Delete 向微信支付发送一个 HTTP Delete 请求
 func (client *Client) Delete(ctx context.Context, requestURL string, requestBody interface{}) (*APIResult, error) {
 	return client.requestWithJSONBody(ctx, http.MethodDelete, requestURL, requestBody)
 }
 
 // Upload 向微信支付发送上传文件
-func (client *Client) Upload(ctx context.Context, requestURL, meta, reqBody, formContentType string) (*APIResult, error) {
+// 推荐使用 services/fileuploader 中各上传接口的实现
+func (client *Client) Upload(ctx context.Context, requestURL, meta, reqBody, formContentType string) (
+	*APIResult, error,
+) {
 	return client.doRequest(ctx, http.MethodPost, requestURL, nil, formContentType, strings.NewReader(reqBody), meta)
 }
 
-func (client *Client) requestWithJSONBody(ctx context.Context, method, requestURL string, body interface{}) (*APIResult, error) {
+func (client *Client) requestWithJSONBody(ctx context.Context, method, requestURL string, body interface{}) (
+	*APIResult, error,
+) {
 	reqBody, err := setBody(body, consts.ApplicationJSON)
 	if err != nil {
 		return nil, err
@@ -136,7 +192,8 @@ func (client *Client) doRequest(
 	header http.Header,
 	contentType string,
 	reqBody io.Reader,
-	signBody string) (*APIResult, error) {
+	signBody string,
+) (*APIResult, error) {
 
 	var (
 		err           error
@@ -150,32 +207,27 @@ func (client *Client) doRequest(
 	}
 
 	// Header Setting Priority:
-	// Fixed Headers > Per-Request Header Parameters > Client Default Headers
-
-	// Add Client Default Headers
-	for key, values := range client.defaultHeader {
-		for _, v := range values {
-			request.Header.Add(key, v)
-		}
-	}
+	// Fixed Headers > Per-Request Header Parameters
 
 	// Add Request Header Parameters
-	if header != nil {
-		for key, values := range header {
-			for _, v := range values {
-				request.Header.Add(key, v)
-			}
+	for key, values := range header {
+		for _, v := range values {
+			request.Header.Add(key, v)
 		}
 	}
 
 	// Set Fixed Headers
 	request.Header.Set(consts.Accept, "*/*")
 	request.Header.Set(consts.ContentType, contentType)
-	request.Header.Set(consts.UserAgent, consts.UserAgentContent)
+
+	ua := fmt.Sprintf(consts.UserAgentFormat, consts.Version, runtime.GOOS, runtime.Version())
+	request.Header.Set(consts.UserAgent, ua)
 
 	// Set Authentication
-	if authorization, err = client.credential.GenerateAuthorizationHeader(ctx, method, request.URL.RequestURI(),
-		signBody); err != nil {
+	if authorization, err = client.credential.GenerateAuthorizationHeader(
+		ctx, method, request.URL.RequestURI(),
+		signBody,
+	); err != nil {
 		return nil, fmt.Errorf("generate authorization err:%s", err.Error())
 	}
 	request.Header.Set(consts.Authorization, authorization)
@@ -199,13 +251,15 @@ func (client *Client) doRequest(
 // Request 向微信支付发送请求
 //
 // 相比于 Get / Post / Put / Patch / Delete 方法，本方法可以设置更多内容
+// 特别地，如果需要为当前请求设置 Header，可以使用本方法
 func (client *Client) Request(
 	ctx context.Context,
 	method, requestPath string,
 	headerParams http.Header,
 	queryParams url.Values,
 	postBody interface{},
-	contentType string) (result *APIResult, err error) {
+	contentType string,
+) (result *APIResult, err error) {
 
 	// Setup path and query parameters
 	varURL, err := url.Parse(requestPath)
@@ -249,6 +303,32 @@ func (client *Client) doHTTP(req *http.Request) (result *APIResult, err error) {
 	return result, err
 }
 
+// EncryptRequest 使用 cipher 对请求结构进行原地加密，并返回加密所用的平台证书的序列号。
+// 未设置 cipher 时将跳过加密，并返回空序列号。
+//
+// 本方法会对结构中的敏感字段进行原地加密，因此需要传入结构体的指针。
+func (client *Client) EncryptRequest(ctx context.Context, req interface{}) (string, error) {
+	if client.cipher == nil {
+		return "", nil
+	}
+	return client.cipher.Encrypt(ctx, req)
+}
+
+// DecryptResponse 使用 cipher 对应答结构进行原地解密，未设置 cipher 时将跳过解密
+//
+// 本方法会对结构中的敏感字段进行原地解密，因此需要传入结构体的指针。
+func (client *Client) DecryptResponse(ctx context.Context, resp interface{}) error {
+	if client.cipher == nil {
+		return nil
+	}
+	return client.cipher.Decrypt(ctx, resp)
+}
+
+// Sign 使用 signer 对字符串进行签名
+func (client *Client) Sign(ctx context.Context, message string) (result *auth.SignatureResult, err error) {
+	return client.signer.Sign(ctx, message)
+}
+
 // CheckResponse 校验请求是否成功
 //
 // 当http回包的状态码的范围不是200-299之间的时候，会返回相应的错误信息，主要包括http状态码、回包错误码、回包错误信息提示
@@ -257,30 +337,26 @@ func CheckResponse(resp *http.Response) error {
 		return nil
 	}
 	slurp, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
-	if err == nil {
-		resp.Body = ioutil.NopCloser(bytes.NewBuffer(slurp))
-		apiError := &APIError{
-			StatusCode: resp.StatusCode,
-			Header:     resp.Header,
-			Body:       string(slurp),
-		}
-		err = json.Unmarshal(slurp, apiError)
-		if err == nil {
-			return apiError
-		}
+	if err != nil {
+		return fmt.Errorf("invalid response, read body error: %w", err)
 	}
-	return &APIError{
+	_ = resp.Body.Close()
+
+	resp.Body = ioutil.NopCloser(bytes.NewBuffer(slurp))
+	apiError := &APIError{
 		StatusCode: resp.StatusCode,
-		Body:       string(slurp),
 		Header:     resp.Header,
+		Body:       string(slurp),
 	}
+	// 忽略 JSON 解析错误，均返回 apiError
+	_ = json.Unmarshal(slurp, apiError)
+	return apiError
 }
 
 // UnMarshalResponse 将回包组织成结构化数据
 func UnMarshalResponse(httpResp *http.Response, resp interface{}) error {
 	body, err := ioutil.ReadAll(httpResp.Body)
-	httpResp.Body.Close()
+	_ = httpResp.Body.Close()
 
 	if err != nil {
 		return err
@@ -297,7 +373,7 @@ func UnMarshalResponse(httpResp *http.Response, resp interface{}) error {
 
 // CreateFormField 设置form-data 中的普通属性
 //
-//示例内容
+// 示例内容
 //	Content-Disposition: form-data; name="meta";
 //	Content-Type: application/json
 //
@@ -372,7 +448,7 @@ func setBody(body interface{}, contentType string) (bodyBuf *bytes.Buffer, err e
 // contains is a case insensitive match, finding needle in a haystack
 func contains(haystack []string, needle string) bool {
 	for _, a := range haystack {
-		if strings.ToLower(a) == strings.ToLower(needle) {
+		if strings.EqualFold(a, needle) {
 			return true
 		}
 	}

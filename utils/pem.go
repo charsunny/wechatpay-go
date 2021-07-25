@@ -1,3 +1,5 @@
+// Copyright 2021 Tencent Inc. All rights reserved.
+
 package utils
 
 import (
@@ -16,6 +18,9 @@ func LoadCertificate(certificateStr string) (certificate *x509.Certificate, err 
 	if block == nil {
 		return nil, fmt.Errorf("decode certificate err")
 	}
+	if block.Type != "CERTIFICATE" {
+		return nil, fmt.Errorf("the kind of PEM should be CERTIFICATE")
+	}
 	certificate, err = x509.ParseCertificate(block.Bytes)
 	if err != nil {
 		return nil, fmt.Errorf("parse certificate err:%s", err.Error())
@@ -28,6 +33,9 @@ func LoadPrivateKey(privateKeyStr string) (privateKey *rsa.PrivateKey, err error
 	block, _ := pem.Decode([]byte(privateKeyStr))
 	if block == nil {
 		return nil, fmt.Errorf("decode private key err")
+	}
+	if block.Type != "PRIVATE KEY" {
+		return nil, fmt.Errorf("the kind of PEM should be PRVATE KEY")
 	}
 	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
@@ -45,6 +53,9 @@ func LoadPublicKey(publicKeyStr string) (publicKey *rsa.PublicKey, err error) {
 	block, _ := pem.Decode([]byte(publicKeyStr))
 	if block == nil {
 		return nil, errors.New("decode public key error")
+	}
+	if block.Type != "PUBLIC KEY" {
+		return nil, fmt.Errorf("the kind of PEM should be PUBLIC KEY")
 	}
 	key, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
@@ -86,7 +97,7 @@ func LoadPublicKeyWithPath(path string) (publicKey *rsa.PublicKey, err error) {
 
 // GetCertificateSerialNumber 从证书中获取证书序列号
 func GetCertificateSerialNumber(certificate x509.Certificate) string {
-	return fmt.Sprintf("%X", certificate.SerialNumber)
+	return fmt.Sprintf("%X", certificate.SerialNumber.Bytes())
 }
 
 // IsCertExpired 判定证书在特定时间是否过期
