@@ -65,10 +65,6 @@ type Client struct {
 	validator  auth.Validator
 	signer     auth.Signer
 	cipher     cipher.Cipher
-<<<<<<< HEAD
-=======
-	isv        bool
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
 }
 
 // NewClient 初始化一个微信支付API v3 HTTPClient

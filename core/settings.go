@@ -16,10 +16,6 @@ type DialSettings struct {
 	Signer     auth.Signer    // 签名器
 	Validator  auth.Validator // 应答包签名校验器
 	Cipher     cipher.Cipher  // 敏感字段加解密套件
-<<<<<<< HEAD
-=======
-	Isv        bool
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
 }
 
 // Validate 校验请求配置是否有效
