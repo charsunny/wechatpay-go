@@ -40,7 +40,6 @@ type PromotionDetail struct {
 	GoodsDetail []PromotionGoodsDetail `json:"goods_detail,omitempty"`
 }
 
-<<<<<<< HEAD
 func (o PromotionDetail) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -220,8 +219,6 @@ func (o PromotionDetail) Clone() *PromotionDetail {
 	return &ret
 }
 
-=======
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
 // PromotionGoodsDetail
 type PromotionGoodsDetail struct {
 	// 商品编码
@@ -236,7 +233,6 @@ type PromotionGoodsDetail struct {
 	GoodsRemark *string `json:"goods_remark,omitempty"`
 }
 
-<<<<<<< HEAD
 func (o PromotionGoodsDetail) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -332,8 +328,6 @@ func (o PromotionGoodsDetail) Clone() *PromotionGoodsDetail {
 	return &ret
 }
 
-=======
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
 // Transaction
 type Transaction struct {
 	Amount          *TransactionAmount `json:"amount,omitempty"`
@@ -351,7 +345,6 @@ type Transaction struct {
 	TransactionId   *string            `json:"transaction_id,omitempty"`
 }
 
-<<<<<<< HEAD
 func (o Transaction) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -551,8 +544,6 @@ func (o Transaction) Clone() *Transaction {
 	return &ret
 }
 
-=======
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
 // TransactionAmount
 type TransactionAmount struct {
 	Currency      *string `json:"currency,omitempty"`
@@ -561,7 +552,6 @@ type TransactionAmount struct {
 	Total         *int64  `json:"total,omitempty"`
 }
 
-<<<<<<< HEAD
 func (o TransactionAmount) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 
@@ -638,13 +628,10 @@ func (o TransactionAmount) Clone() *TransactionAmount {
 	return &ret
 }
 
-=======
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
 // TransactionPayer
 type TransactionPayer struct {
 	Openid *string `json:"openid,omitempty"`
 }
-<<<<<<< HEAD
 
 func (o TransactionPayer) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -676,5 +663,3 @@ func (o TransactionPayer) Clone() *TransactionPayer {
 
 	return &ret
 }
-=======
->>>>>>> add9afdbab17f45b8bea6d73c1261805479102af
