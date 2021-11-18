@@ -16,6 +16,43 @@ type BusiFavorStockRequest struct {
 	Subsidy            *bool               `json:"subsidy,omitempty"`
 }
 
+type ModifyBusiFavorStockRequest struct {
+	CustomEntrance struct {
+		MiniProgramsInfo struct {
+			MiniProgramsAppid string `json:"mini_programs_appid,omitempty"`
+			MiniProgramsPath  string `json:"mini_programs_path,omitempty"`
+			EntranceWords     string `json:"entrance_words,omitempty"`
+			GuidingWords      string `json:"guiding_words,omitempty"`
+		} `json:"mini_programs_info,omitempty"`
+		Appid           string `json:"appid,omitempty"`
+		HallID          string `json:"hall_id,omitempty"`
+		CodeDisplayMode string `json:"code_display_mode,omitempty"`
+	} `json:"custom_entrance,omitempty"`
+	Comment            string `json:"comment,omitempty"`
+	GoodsName          string `json:"goods_name,omitempty"`
+	OutRequestNo       string `json:"out_request_no"`
+	DisplayPatternInfo struct {
+		Description     string `json:"description,omitempty"`
+		BackgroundColor string `json:"background_color,omitempty"`
+		CouponImageURL  string `json:"coupon_image_url,omitempty"`
+		FinderInfo      struct {
+			FinderID                 string `json:"finder_id"`
+			FinderVideoCoverImageURL string `json:"finder_video_cover_image_url"`
+			FinderVideoID            string `json:"finder_video_id"`
+		} `json:"finder_info,omitempty"`
+	} `json:"display_pattern_info,omitempty"`
+	CouponUseRule struct {
+		UseMethod         string `json:"use_method,omitempty"`
+		MiniProgramsAppid string `json:"mini_programs_appid,omitempty"`
+		MiniProgramsPath  string `json:"mini_programs_path,omitempty"`
+	} `json:"coupon_use_rule,omitempty"`
+	StockSendRule struct {
+		PreventAPIAbuse bool `json:"prevent_api_abuse,omitempty"`
+	} `json:"stock_send_rule,omitempty"`
+	NotifyConfig struct {
+		NotifyAppid string `json:"notify_appid,omitempty"`
+	} `json:"notify_config,omitempty"`
+}
 type AvailableDayTime struct {
 	BeginTime int `json:"begin_time"`
 	EndTime   int `json:"end_time"`
@@ -31,8 +68,8 @@ type IrregularyAvaliableTime struct {
 type CouponAvailableTime struct {
 	AvailableBeginTime       string                     `json:"available_begin_time"`
 	AvailableEndTime         string                     `json:"available_end_time"`
-	AvailableDayAfterReceive int                        `json:"available_day_after_receive"`
-	WaitDaysAfterReceive     int                        `json:"wait_days_after_receive"`
+	AvailableDayAfterReceive int                        `json:"available_day_after_receive,omitempty"`
+	WaitDaysAfterReceive     int                        `json:"wait_days_after_receive,omitempty"`
 	AvailableWeek            *AvailableWeek             `json:"available_week,omitempty"`
 	IrregularyAvaliableTime  []*IrregularyAvaliableTime `json:"irregulary_avaliable_time,omitempty"`
 }
@@ -40,12 +77,22 @@ type FixedNormalCoupon struct {
 	DiscountAmount     int `json:"discount_amount"`
 	TransactionMinimum int `json:"transaction_minimum"`
 }
+type DiscountCoupon struct {
+	DiscountPercent    int `json:"discount_percent"`
+	TransactionMinimum int `json:"transaction_minimum"`
+}
+type ExchangeCoupon struct {
+	ExchangePrice      int `json:"exchange_price"`
+	TransactionMinimum int `json:"transaction_minimum"`
+}
 type CouponUseRule struct {
 	CouponAvailableTime CouponAvailableTime `json:"coupon_available_time"`
-	FixedNormalCoupon   FixedNormalCoupon   `json:"fixed_normal_coupon"`
+	FixedNormalCoupon   FixedNormalCoupon   `json:"fixed_normal_coupon,omitempty"` //三选一 stock_type为NORMAL时必填。
+	DiscountCoupon      DiscountCoupon      `json:"discount_coupon,omitempty"`     //三选一 stock_type为DISCOUNT时必填。
+	ExchangeCoupon      ExchangeCoupon      `json:"exchange_coupon,omitempty"`     //三选一 stock_type为EXCHANGE时必填。
 	UseMethod           string              `json:"use_method"`
-	MiniProgramsAppid   string              `json:"mini_programs_appid"`
-	MiniProgramsPath    string              `json:"mini_programs_path"`
+	MiniProgramsAppid   string              `json:"mini_programs_appid,omitempty"`
+	MiniProgramsPath    string              `json:"mini_programs_path,omitempty"`
 }
 type StockSendRule struct {
 	MaxCoupons         int  `json:"max_coupons"`
@@ -91,22 +138,29 @@ type BusiFavorStockResponse struct {
 }
 
 type BusiFavorStockInfo struct {
-	StockName          string             `json:"stock_name"`
-	BelongMerchant     string             `json:"belong_merchant"`
-	Comment            string             `json:"comment"`
-	GoodsName          string             `json:"goods_name"`
-	StockType          string             `json:"stock_type"`
-	CouponUseRule      CouponUseRule      `json:"coupon_use_rule"`
-	StockSendRule      StockSendRule      `json:"stock_send_rule"`
-	CustomEntrance     CustomEntrance     `json:"custom_entrance"`
-	DisplayPatternInfo DisplayPatternInfo `json:"display_pattern_info"`
-	StockState         string             `json:"stock_state"`
-	CouponCodeMode     string             `json:"coupon_code_mode"`
-	StockID            string             `json:"stock_id"`
-	NotifyConfig       *NotifyConfig      `json:"notify_config"`
-	CouponCodeCount    CouponCodeCount    `json:"coupon_code_count"`
+	StockName            string               `json:"stock_name"`
+	BelongMerchant       string               `json:"belong_merchant"`
+	Comment              string               `json:"comment,omitempty"`
+	GoodsName            string               `json:"goods_name"`
+	StockType            string               `json:"stock_type"`
+	CouponUseRule        CouponUseRule        `json:"coupon_use_rule"`
+	StockSendRule        StockSendRule        `json:"stock_send_rule"`
+	CustomEntrance       CustomEntrance       `json:"custom_entrance,omitempty"`
+	DisplayPatternInfo   DisplayPatternInfo   `json:"display_pattern_info"`
+	StockState           string               `json:"stock_state"`
+	CouponCodeMode       string               `json:"coupon_code_mode"`
+	StockID              string               `json:"stock_id"`
+	NotifyConfig         *NotifyConfig        `json:"notify_config,omitempty"`
+	CouponCodeCount      CouponCodeCount      `json:"coupon_code_count,omitempty"`
+	CendCountInformation CendCountInformation `json:"send_count_information,omitempty"`
 }
 
+type CendCountInformation struct {
+	CouponCode uint64 `json:"total_send_num,omitempty"`    // 批次已发放的券数量，满减、折扣、换购类型会返回该字段
+	StockID    uint64 `json:"total_send_amount,omitempty"` // 批次已发放的预算金额，满减券类型会返回该字段
+	Appid      uint64 `json:"today_send_num,omitempty"`    // 批次当天已发放的券数量，设置了单天发放上限的满减、折扣、换购类型返回该字段
+	UseTime    uint64 `json:"today_send_amount,omitempty"` // 批次当天已发放的预算金额，设置了当天发放上限的满减券类型返回该字段
+}
 type CouponConsumeRequest struct {
 	CouponCode   string `json:"coupon_code"`
 	StockID      string `json:"stock_id"`
@@ -136,7 +190,7 @@ type UserCouponRequest struct {
 
 // UserCouponList 用户领取商家券列表
 type UserCouponList struct {
-	List       []UserCoupon `json:"data"`
+	List       []UserCoupon `json:"data,omitempty"`
 	TotalCount int          `json:"total_count"`
 	Limit      int          `json:"limit"`
 	Offset     int          `json:"offset"`
@@ -262,13 +316,14 @@ type BusiFavorSend struct {
 	Unionid      string `json:"unionid,omitempty"`
 	SendChannel  string `json:"send_channel"`
 	SendMerchant string `json:"send_merchant"`
-	AttachInfo   struct {
-		TransactionID   string `json:"transaction_id,omitempty"`
-		ActCode         string `json:"act_code,omitempty"`
-		HallCode        string `json:"hall_code,omitempty"`
-		HallBelongMchID string `json:"hall_belong_mch_id,omitempty"`
-		CardID          string `json:"card_id,omitempty"`
-		Code            string `json:"code,omitempty"`
-		ActivityID      string `json:"activity_id,omitempty"`
-	} `json:"attach_info,omitempty"`
+	AttachInfo   string `json:"attach_info,omitempty"`
+	// AttachInfo   struct {
+	// 	TransactionID   string `json:"transaction_id,omitempty"`
+	// 	ActCode         string `json:"act_code,omitempty"`
+	// 	HallCode        string `json:"hall_code,omitempty"`
+	// 	HallBelongMchID string `json:"hall_belong_mch_id,omitempty"`
+	// 	CardID          string `json:"card_id,omitempty"`
+	// 	Code            string `json:"code,omitempty"`
+	// 	ActivityID      string `json:"activity_id,omitempty"`
+	// } `json:"attach_info,omitempty"`
 }
