@@ -87,9 +87,9 @@ type ExchangeCoupon struct {
 }
 type CouponUseRule struct {
 	CouponAvailableTime CouponAvailableTime `json:"coupon_available_time"`
-	FixedNormalCoupon   FixedNormalCoupon   `json:"fixed_normal_coupon,omitempty"` //三选一 stock_type为NORMAL时必填。
-	DiscountCoupon      DiscountCoupon      `json:"discount_coupon,omitempty"`     //三选一 stock_type为DISCOUNT时必填。
-	ExchangeCoupon      ExchangeCoupon      `json:"exchange_coupon,omitempty"`     //三选一 stock_type为EXCHANGE时必填。
+	FixedNormalCoupon   *FixedNormalCoupon  `json:"fixed_normal_coupon,omitempty"` //三选一 stock_type为NORMAL时必填。
+	DiscountCoupon      *DiscountCoupon     `json:"discount_coupon,omitempty"`     //三选一 stock_type为DISCOUNT时必填。
+	ExchangeCoupon      *ExchangeCoupon     `json:"exchange_coupon,omitempty"`     //三选一 stock_type为EXCHANGE时必填。
 	UseMethod           string              `json:"use_method"`
 	MiniProgramsAppid   string              `json:"mini_programs_appid,omitempty"`
 	MiniProgramsPath    string              `json:"mini_programs_path,omitempty"`
@@ -103,6 +103,7 @@ type StockSendRule struct {
 	Transferable       bool `json:"transferable"`
 	Shareable          bool `json:"shareable"`
 }
+
 type MiniProgramsInfo struct {
 	MiniProgramsAppid string `json:"mini_programs_appid"`
 	MiniProgramsPath  string `json:"mini_programs_path"`
@@ -110,10 +111,10 @@ type MiniProgramsInfo struct {
 	GuidingWords      string `json:"guiding_words,omitempty"`
 }
 type CustomEntrance struct {
-	MiniProgramsInfo MiniProgramsInfo `json:"mini_programs_info,omitempty"`
-	Appid            string           `json:"appid,omitempty"`
-	HallID           string           `json:"hall_id,omitempty"`
-	StoreID          string           `json:"store_id,omitempty"`
+	MiniProgramsInfo *MiniProgramsInfo `json:"mini_programs_info,omitempty"`
+	Appid            string            `json:"appid,omitempty"`
+	HallID           string            `json:"hall_id,omitempty"`
+	StoreID          string            `json:"store_id,omitempty"`
 }
 type DisplayPatternInfo struct {
 	Description     string `json:"description,omitempty"`
@@ -138,21 +139,21 @@ type BusiFavorStockResponse struct {
 }
 
 type BusiFavorStockInfo struct {
-	StockName            string               `json:"stock_name"`
-	BelongMerchant       string               `json:"belong_merchant"`
-	Comment              string               `json:"comment,omitempty"`
-	GoodsName            string               `json:"goods_name"`
-	StockType            string               `json:"stock_type"`
-	CouponUseRule        CouponUseRule        `json:"coupon_use_rule"`
-	StockSendRule        StockSendRule        `json:"stock_send_rule"`
-	CustomEntrance       CustomEntrance       `json:"custom_entrance,omitempty"`
-	DisplayPatternInfo   DisplayPatternInfo   `json:"display_pattern_info"`
-	StockState           string               `json:"stock_state"`
-	CouponCodeMode       string               `json:"coupon_code_mode"`
-	StockID              string               `json:"stock_id"`
-	NotifyConfig         *NotifyConfig        `json:"notify_config,omitempty"`
-	CouponCodeCount      CouponCodeCount      `json:"coupon_code_count,omitempty"`
-	CendCountInformation CendCountInformation `json:"send_count_information,omitempty"`
+	StockName            string                `json:"stock_name"`
+	BelongMerchant       string                `json:"belong_merchant"`
+	Comment              string                `json:"comment,omitempty"`
+	GoodsName            string                `json:"goods_name"`
+	StockType            string                `json:"stock_type"`
+	CouponUseRule        CouponUseRule         `json:"coupon_use_rule"`
+	StockSendRule        StockSendRule         `json:"stock_send_rule"`
+	CustomEntrance       *CustomEntrance       `json:"custom_entrance,omitempty"`
+	DisplayPatternInfo   DisplayPatternInfo    `json:"display_pattern_info"`
+	StockState           string                `json:"stock_state"`
+	CouponCodeMode       string                `json:"coupon_code_mode"`
+	StockID              string                `json:"stock_id"`
+	NotifyConfig         *NotifyConfig         `json:"notify_config,omitempty"`
+	CouponCodeCount      *CouponCodeCount      `json:"coupon_code_count,omitempty"`
+	CendCountInformation *CendCountInformation `json:"send_count_information,omitempty"`
 }
 
 type CendCountInformation struct {
@@ -198,25 +199,25 @@ type UserCouponList struct {
 
 // UserCoupon 用户单张券详情
 type UserCoupon struct {
-	BelongMerchant     string             `json:"belong_merchant"`                 // 批次归属于哪个商户。
-	StockName          string             `json:"stock_name"`                      // 批次名称，字数上限为21个，一个中文汉字/英文字母/数字均占用一个字数。
-	Comment            string             `json:"comment,omitempty"`               // 仅配置商户可见，用于自定义信息。字数上限为20个，一个中文汉字/英文字母/数字均占用一个字数。
-	GoodsName          string             `json:"goods_name"`                      // 适用商品范围，字数上限为15个，一个中文汉字/英文字母/数字均占用一个字数。
-	StockType          string             `json:"stock_type"`                      // 批次类型 NORMAL：固定面额满减券批次 DISCOUNT：折扣券批次 EXCHANGE：换购券批次
-	Transferable       bool               `json:"transferable,omitempty"`          // 不填默认否，枚举值： true：是 false：否 该字段暂未开放
-	Shareable          string             `json:"shareable,omitempty"`             // 不填默认否，枚举值： true：是 false：否
-	CouponState        string             `json:"coupon_state,omitempty"`          // 商家券状态 枚举值： SENDED：可用 USED：已核销 EXPIRED：已过期 DEACTIVATED：已失效
-	DisplayPatternInfo DisplayPatternInfo `json:"display_pattern_info,,omitempty"` // 商家券详细信息
-	CouponUseRule      CouponUseRule      `json:"coupon_use_rule"`                 // 券核销相关规则
-	CustomEntrance     CustomEntrance     `json:"custom_entrance,omitempty"`       // 卡详情页面，可选择多种入口引导用户。
-	CouponCode         string             `json:"coupon_code,omitempty"`           // 券的唯一标识。
-	StockID            string             `json:"stock_id,omitempty"`              // 微信为每个商家券批次分配的唯一ID，是否指定批次号查询。
-	AvailableStartTime string             `json:"available_start_time"`            // 用户领取到该张券实际可使用的开始时间 若券批次设置为领取后可用，则开始时间即为券的领取时间；若券批次设置为领取后第X天可用，则开始时间为券领取时间后第X天00:00:00可用。
-	ExpireTime         string             `json:"expire_time"`                     // 用户领取到该张券的过期时间
-	ReceiveTime        string             `json:"receive_time"`                    // 用户领取到该张券的时间
-	SendRequestNo      string             `json:"send_request_no"`                 // 发券时传入的唯一凭证
-	UseRequestNo       string             `json:"use_request_no,omitempty"`        // 核销时传入的唯一凭证（如券已被核销，将返回此字段）
-	UseTime            string             `json:"use_time,omitempty"`              // 券被核销的时间（如券已被核销，将返回此字段）
+	BelongMerchant     string              `json:"belong_merchant"`                 // 批次归属于哪个商户。
+	StockName          string              `json:"stock_name"`                      // 批次名称，字数上限为21个，一个中文汉字/英文字母/数字均占用一个字数。
+	Comment            string              `json:"comment,omitempty"`               // 仅配置商户可见，用于自定义信息。字数上限为20个，一个中文汉字/英文字母/数字均占用一个字数。
+	GoodsName          string              `json:"goods_name"`                      // 适用商品范围，字数上限为15个，一个中文汉字/英文字母/数字均占用一个字数。
+	StockType          string              `json:"stock_type"`                      // 批次类型 NORMAL：固定面额满减券批次 DISCOUNT：折扣券批次 EXCHANGE：换购券批次
+	Transferable       bool                `json:"transferable,omitempty"`          // 不填默认否，枚举值： true：是 false：否 该字段暂未开放
+	Shareable          string              `json:"shareable,omitempty"`             // 不填默认否，枚举值： true：是 false：否
+	CouponState        string              `json:"coupon_state,omitempty"`          // 商家券状态 枚举值： SENDED：可用 USED：已核销 EXPIRED：已过期 DEACTIVATED：已失效
+	DisplayPatternInfo *DisplayPatternInfo `json:"display_pattern_info,,omitempty"` // 商家券详细信息
+	CouponUseRule      CouponUseRule       `json:"coupon_use_rule"`                 // 券核销相关规则
+	CustomEntrance     *CustomEntrance     `json:"custom_entrance,omitempty"`       // 卡详情页面，可选择多种入口引导用户。
+	CouponCode         string              `json:"coupon_code,omitempty"`           // 券的唯一标识。
+	StockID            string              `json:"stock_id,omitempty"`              // 微信为每个商家券批次分配的唯一ID，是否指定批次号查询。
+	AvailableStartTime string              `json:"available_start_time"`            // 用户领取到该张券实际可使用的开始时间 若券批次设置为领取后可用，则开始时间即为券的领取时间；若券批次设置为领取后第X天可用，则开始时间为券领取时间后第X天00:00:00可用。
+	ExpireTime         string              `json:"expire_time"`                     // 用户领取到该张券的过期时间
+	ReceiveTime        string              `json:"receive_time"`                    // 用户领取到该张券的时间
+	SendRequestNo      string              `json:"send_request_no"`                 // 发券时传入的唯一凭证
+	UseRequestNo       string              `json:"use_request_no,omitempty"`        // 核销时传入的唯一凭证（如券已被核销，将返回此字段）
+	UseTime            string              `json:"use_time,omitempty"`              // 券被核销的时间（如券已被核销，将返回此字段）
 }
 
 // Callbacks 商家券事件通知地址
