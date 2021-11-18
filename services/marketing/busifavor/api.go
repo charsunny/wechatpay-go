@@ -91,7 +91,7 @@ func (s *BusiFavorService) ModifyCouponStocksBudget(ctx context.Context, stock_i
 // 请求URL：https://api.mch.weixin.qq.com/v3/marketing/busifavor/stocks/{stock_id}
 // 请求方式：Patch
 // 前置条件： 已创建商家券批次，且修改时间位于有效期结束时间前
-func (s *BusiFavorService) ModifyCouponStocks(ctx context.Context, stock_id string, req *BusiFavorStockRequest) (result *core.APIResult, err error) {
+func (s *BusiFavorService) ModifyCouponStocks(ctx context.Context, stock_id string, req *ModifyBusiFavorStockRequest) (result *core.APIResult, err error) {
 	var (
 		localVarHTTPMethod   = nethttp.MethodPatch
 		localVarPostBody     interface{}
@@ -118,7 +118,7 @@ func (s *BusiFavorService) ModifyCouponStocks(ctx context.Context, stock_id stri
 // 适用对象： 直连商户
 // 请求URL：https://api.mch.weixin.qq.com/v3/marketing/busifavor/stocks/{stock_id}
 // 请求方式：GET
-func (s *BusiFavorService) GetCouponStocks(ctx context.Context, stock_id string) (resp *BusiFavorStockInfo, result *core.APIResult, err error) {
+func (s *BusiFavorService) GetCouponStocks(ctx context.Context, stockID string) (resp *BusiFavorStockInfo, result *core.APIResult, err error) {
 	var (
 		localVarHTTPMethod   = nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -126,7 +126,7 @@ func (s *BusiFavorService) GetCouponStocks(ctx context.Context, stock_id string)
 		localVarHeaderParams nethttp.Header
 	)
 
-	localVarPath := consts.WechatPayAPIServer + fmt.Sprintf("/v3/marketing/busifavor/stocks/%s", stock_id)
+	localVarPath := consts.WechatPayAPIServer + fmt.Sprintf("/v3/marketing/busifavor/stocks/%s", stockID)
 
 	// Determine the Content-Type Header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -203,7 +203,7 @@ func (s *BusiFavorService) GetUserCoupons(ctx context.Context, openid string, re
 
 	// Setup Body Params
 	// localVarPostBody = req
-
+	localVarQueryParams = neturl.Values{}
 	localVarQueryParams.Add("appid", req.Appid)
 	localVarQueryParams.Add("stock_id", req.StockID)
 	localVarQueryParams.Add("coupon_state", req.CouponState)
@@ -327,7 +327,7 @@ func (s *BusiFavorService) GetNotifyURL(ctx context.Context, mchID string) (resp
 
 	// Setup Body Params
 	// localVarPostBody = req
-
+	localVarQueryParams = neturl.Values{}
 	localVarQueryParams.Add("mchid", mchID)
 
 	// Determine the Content-Type Header
